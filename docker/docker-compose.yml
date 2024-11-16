@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  database:
+    image: mysql:8.0.22
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: hwi
+      TZ: Asia/Seoul
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
