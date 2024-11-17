@@ -4,6 +4,7 @@ import com.example.managestockconcurrency.domain.Stock;
 import com.example.managestockconcurrency.domain.StockRepository;
 import com.example.managestockconcurrency.service.StockService;
 import com.example.managestockconcurrency.service.StockServiceV2;
+import com.example.managestockconcurrency.service.StockServiceV3;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ class StockServiceTest {
 
     @Autowired
     private StockServiceV2 stockServiceV2;
+
+    @Autowired
+    private StockServiceV3 stockServiceV3;
 
     @Autowired
     private StockRepository stockRepository;
@@ -47,7 +51,7 @@ class StockServiceTest {
     }
 
     @Test
-    void 동시에_100명의_유저가_재고_감소_요청() throws InterruptedException {
+    void 동시에_100명의_유저가_재고_감소_요청_V2() throws InterruptedException {
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -56,6 +60,28 @@ class StockServiceTest {
             executorService.submit(() -> {
                 try {
                     stockServiceV2.decrease(1L, 1L);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        Stock stock = stockRepository.getByProductId(1L);
+        assertThat(stock.getQuantity()).isZero();
+    }
+
+    @Test
+    void 동시에_100명의_유저가_재고_감소_요청_V3() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    stockServiceV3.decrease(1L, 1L);
                 } finally {
                     latch.countDown();
                 }
