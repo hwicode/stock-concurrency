@@ -5,6 +5,7 @@ import com.example.managestockconcurrency.repository.StockRepository;
 import com.example.managestockconcurrency.service.StockService;
 import com.example.managestockconcurrency.service.StockServiceV2;
 import com.example.managestockconcurrency.service.StockServiceV3;
+import com.example.managestockconcurrency.service.StockServiceV6;
 import com.example.managestockconcurrency.service.v4.OptimisticLockFacade;
 import com.example.managestockconcurrency.service.v5.NamedLockFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -38,6 +39,9 @@ class StockServiceTest {
     private NamedLockFacade namedLockFacade;
 
     @Autowired
+    private StockServiceV6 stockServiceV6;
+
+    @Autowired
     private StockRepository stockRepository;
 
     @BeforeEach
@@ -56,6 +60,28 @@ class StockServiceTest {
         Stock stock = stockRepository.getByProductId(1L);
 
         assertThat(stock.getQuantity()).isEqualTo(99L);
+    }
+
+    @Test
+    void 동시에_100명의_유저가_재고_감소_요청_실패_V1() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    stockService.decrease(1L, 1L);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        Stock stock = stockRepository.getByProductId(1L);
+        assertThat(stock.getQuantity()).isNotZero();
     }
 
     @Test
@@ -136,6 +162,30 @@ class StockServiceTest {
             executorService.submit(() -> {
                 try {
                     namedLockFacade.decrease(1L, 1L);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        Stock stock = stockRepository.getByProductId(1L);
+        assertThat(stock.getQuantity()).isZero();
+    }
+
+    @Test
+    void 동시에_100명의_유저가_재고_감소_요청_V6() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    stockServiceV6.decrease(1L, 1L);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
                 } finally {
                     latch.countDown();
                 }
