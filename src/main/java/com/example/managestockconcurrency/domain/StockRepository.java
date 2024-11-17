@@ -1,4 +1,4 @@
-package com.example.managestockconcurrency;
+package com.example.managestockconcurrency.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

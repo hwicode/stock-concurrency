@@ -1,4 +1,4 @@
-package com.example.managestockconcurrency;
+package com.example.managestockconcurrency.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
