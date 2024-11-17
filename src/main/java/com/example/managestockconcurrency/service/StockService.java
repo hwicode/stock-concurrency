@@ -13,8 +13,8 @@ public class StockService {
     private final StockRepository stockRepository;
 
     @Transactional
-    public void decrease(Long id, Long quantity) {
-        Stock stock = stockRepository.findById(id).orElseThrow();
+    public void decrease(Long productId, Long quantity) {
+        Stock stock = stockRepository.getByProductId(productId);
         stock.decrease(quantity);
     }
 }
