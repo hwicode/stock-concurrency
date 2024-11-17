@@ -4,6 +4,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: hwi
+    hikari:
+      maximum-pool-size: 40
 
   jpa:
     open-in-view: false
