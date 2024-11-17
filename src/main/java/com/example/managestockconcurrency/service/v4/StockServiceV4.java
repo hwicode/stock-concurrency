@@ -1,7 +1,7 @@
 package com.example.managestockconcurrency.service.v4;
 
 import com.example.managestockconcurrency.domain.Stock;
-import com.example.managestockconcurrency.domain.StockRepository;
+import com.example.managestockconcurrency.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

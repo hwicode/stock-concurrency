@@ -1,5 +1,6 @@
-package com.example.managestockconcurrency.domain;
+package com.example.managestockconcurrency.repository;
 
+import com.example.managestockconcurrency.domain.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

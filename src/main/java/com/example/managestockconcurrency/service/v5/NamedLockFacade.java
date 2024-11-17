@@ -1,6 +1,6 @@
 package com.example.managestockconcurrency.service.v5;
 
-import com.example.managestockconcurrency.domain.LockRepository;
+import com.example.managestockconcurrency.repository.LockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.example.managestockconcurrency;
 
 import com.example.managestockconcurrency.domain.Stock;
-import com.example.managestockconcurrency.domain.StockRepository;
+import com.example.managestockconcurrency.repository.StockRepository;
 import com.example.managestockconcurrency.service.StockService;
 import com.example.managestockconcurrency.service.StockServiceV2;
 import com.example.managestockconcurrency.service.StockServiceV3;
