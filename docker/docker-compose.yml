@@ -12,3 +12,9 @@ services:
       TZ: Asia/Seoul
       MYSQL_CHARSET: utf8mb4
       MYSQL_COLLATION: utf8mb4_unicode_ci
+
+  redis:
+    image: "redis:7.2.4"
+    container_name: redis
+    ports:
+      - "6379:6379"
