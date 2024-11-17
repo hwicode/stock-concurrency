@@ -1,5 +1,9 @@
 package com.example.managestockconcurrency;
 
+import com.example.managestockconcurrency.domain.Stock;
+import com.example.managestockconcurrency.domain.StockRepository;
+import com.example.managestockconcurrency.service.StockService;
+import com.example.managestockconcurrency.service.StockServiceV2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +23,9 @@ class StockServiceTest {
     private StockService stockService;
 
     @Autowired
+    private StockServiceV2 stockServiceV2;
+
+    @Autowired
     private StockRepository stockRepository;
 
     @BeforeEach
@@ -34,7 +41,7 @@ class StockServiceTest {
     @Test
     void 재고_감소() {
         stockService.decrease(1L, 1L);
-        Stock stock = stockRepository.findById(1L).orElseThrow();
+        Stock stock = stockRepository.getByProductId(1L);
 
         assertThat(stock.getQuantity()).isEqualTo(99L);
     }
@@ -48,7 +55,7 @@ class StockServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    stockService.decrease(1L, 1L);
+                    stockServiceV2.decrease(1L, 1L);
                 } finally {
                     latch.countDown();
                 }
@@ -57,7 +64,7 @@ class StockServiceTest {
 
         latch.await();
 
-        Stock stock = stockRepository.findById(1L).orElseThrow();
+        Stock stock = stockRepository.getByProductId(1L);
         assertThat(stock.getQuantity()).isZero();
     }
 }
